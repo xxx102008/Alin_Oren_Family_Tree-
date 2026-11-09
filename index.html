@@ -1,651 +1,480 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>עץ המשפחה — אלין אורן</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Family Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;800&family=Frank+Ruhl+Libre:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-:root{--bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#748096;--line:#cbd4e1;--accent:#1976d2;--soft:#eaf3ff;--shadow:0 5px 18px rgba(25,45,75,.10)}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,"Noto Sans Hebrew",sans-serif}
-header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid #e3e8ef;padding:12px}
-.header{max-width:600px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:8px}
-h1{font-size:18px;margin:0}.sub{font-size:11px;color:var(--muted);margin-top:4px}
-button{font:inherit;cursor:pointer}
-#reset{border:1px solid #d5deea;background:#fff;border-radius:10px;padding:8px 10px}
-main{max-width:600px;margin:auto;padding:13px 10px 45px}
-.help{text-align:center;color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:12px}
-.current{text-align:center;color:var(--muted);font-size:11px;margin-bottom:7px}
-.person{width:min(235px,72vw);margin:auto;background:#fff;border:1.5px solid var(--accent);border-radius:16px;padding:11px;box-shadow:0 7px 22px rgba(25,118,210,.13);text-align:center}
-.badge{display:inline-block;font-size:10px;color:#1265b5;background:var(--soft);border-radius:999px;padding:4px 8px;margin-bottom:5px}
-.name{font-size:16px;font-weight:800}.small{font-size:10px;color:var(--muted);margin-top:4px}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}
-.actions button,.card button{min-height:35px;border-radius:9px;padding:7px 4px;font-size:10px;font-weight:700}
-.primary{background:#1976d2;color:#fff;border:1px solid #1976d2}.secondary{background:#fff;color:#1769b3;border:1px solid #d4e0ed}
-.full{grid-column:1/-1}
-.connector{height:18px;width:2px;background:var(--line);margin:auto}
-.section{margin-top:5px}.section-title{text-align:center;color:#718096;font-size:11px;margin:7px 0}
-.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;max-width:410px;margin:auto}
-.card{background:#fff;border:1px solid #dce3ec;border-radius:13px;padding:9px 7px;text-align:center;box-shadow:var(--shadow);min-width:0}
-.card .name{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card .small{font-size:9px}
-.card .open{width:100%;margin-top:7px;border:0;background:#1976d2;color:#fff}
-.card .details{width:100%;margin-top:5px;border:1px solid #d7e0eb;background:#fff;color:#1976d2}
-.empty{text-align:center;color:#9aa5b5;font-size:11px;margin-top:12px}
-.tip{background:#eef6ff;color:#5f7189;border-radius:11px;padding:9px;font-size:10px;text-align:center;margin-top:13px}
-#modal{display:none;position:fixed;inset:0;z-index:50;background:rgba(20,30,45,.45);padding:12px;align-items:flex-end;justify-content:center}
-#modal.show{display:flex}.modal{width:min(600px,100%);max-height:86vh;overflow:auto;background:#fff;border-radius:20px 20px 0 0;padding:16px}
-.modalhead{display:flex;justify-content:space-between;gap:10px}.close{border:0;background:#eef2f7;border-radius:9px;padding:7px 10px}
-.modalname{font-size:20px;font-weight:800}.modalrel{font-size:11px;color:#1976d2;margin-top:4px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:13px}
-.field{background:#f6f8fb;border-radius:10px;padding:9px}.label{font-size:9px;color:#7c899c}.value{font-size:12px;margin-top:4px;word-break:break-word}
-@media(max-width:390px){.grid{grid-template-columns:1fr}}
-
-.ai-box{margin:18px auto 0;max-width:600px;background:#fff;border:1px solid #dce3ec;border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
-.ai-head{display:flex;align-items:center;justify-content:space-between;padding:12px;border-bottom:1px solid #e8edf3}
-.ai-title{font-weight:800;font-size:15px}.ai-sub{font-size:10px;color:var(--muted);margin-top:3px}
-.ai-clear{border:1px solid #d5deea;background:#f8fafc;border-radius:8px;padding:6px 9px;font-size:10px}
-.chat-messages{height:260px;overflow:auto;padding:10px;background:#f7f9fc}
-.msg{max-width:88%;padding:9px 11px;border-radius:13px;margin:6px 0;font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
-.msg.ai{background:#fff;border:1px solid #e1e7ef;margin-left:auto}
-.msg.user{background:#eaf3ff;color:#145b9d;margin-right:auto}
-.chat-form{display:grid;grid-template-columns:1fr 62px;gap:6px;padding:9px;border-top:1px solid #e8edf3}
-.chat-form input{min-width:0;border:1px solid #d4dce7;border-radius:10px;padding:9px;font:inherit;font-size:12px;direction:rtl}
-.chat-form button{border:0;background:#1976d2;color:#fff;border-radius:10px;font-weight:700}
-.chat-examples{font-size:9px;color:#8a96a7;text-align:center;padding:0 8px 10px}
-
-/* ===== Family AI Assistant ===== */
-.ai-wrap{max-width:600px;margin:12px auto 18px;background:#fff;border:1px solid #dce4ee;border-radius:18px;box-shadow:0 7px 22px rgba(25,45,75,.08);overflow:hidden}
-.ai-head{padding:13px 14px;background:linear-gradient(180deg,#f7fbff,#eef6ff);border-bottom:1px solid #dce8f5}
-.ai-title{font-size:16px;font-weight:800}.ai-status{font-size:10px;color:#62809e;margin-top:3px}
-.ai-chat{padding:11px;max-height:430px;overflow:auto;display:flex;flex-direction:column;gap:8px}
-.ai-msg{max-width:92%;padding:9px 11px;border-radius:13px;font-size:12px;line-height:1.55;white-space:pre-wrap}
-.ai-msg.bot{align-self:flex-start;background:#f1f5f9;color:#243247;border-top-right-radius:4px}
-.ai-msg.user{align-self:flex-end;background:#1976d2;color:#fff;border-top-left-radius:4px}
-.ai-msg strong{font-weight:800}
-.ai-options{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
-.ai-option{border:1px solid #bcd6f2;background:#fff;color:#1769b3;border-radius:10px;padding:7px 9px;font-size:11px;font-weight:700}
-.ai-option:active{transform:scale(.98)}
-.ai-bottom{padding:9px;border-top:1px solid #e5ebf2;background:#fafcff}
-.ai-inputrow{display:grid;grid-template-columns:1fr auto;gap:6px}
-#aiInput{width:100%;min-width:0;border:1px solid #cbd7e5;border-radius:11px;padding:10px;font-size:12px;outline:none}
-#aiInput:focus{border-color:#1976d2}
-#aiSend{border:0;background:#1976d2;color:#fff;border-radius:11px;padding:0 15px;font-weight:800}
-.ai-quick{display:flex;gap:5px;overflow:auto;margin-top:7px;padding-bottom:2px}
-.ai-quick button{white-space:nowrap;border:1px solid #d6e0eb;background:#fff;color:#5b6e84;border-radius:999px;padding:6px 9px;font-size:10px}
-.ai-open{border:1px solid #bcd6f2;background:#eaf3ff;color:#1265b5;border-radius:9px;padding:7px 10px;margin-top:7px;font-size:10px;font-weight:800}
-
+:root{
+  --bg:#0b0710; --bg2:#120a1b; --card:#1a1026; --card2:#150d1f;
+  --line:rgba(255,255,255,.09); --txt:#ece7f2; --dim:#a596b8;
+  --pink:#f0a6d0; --violet:#b98cf5; --cyan:#8ce8f0; --green:#8ef0b4; --amber:#f5d78c;
+  --serif:"Frank Ruhl Libre",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(185,140,245,.16), transparent 60%),
+    radial-gradient(900px 500px at 5% 110%, rgba(240,166,208,.12), transparent 60%),
+    var(--bg);
+  color:var(--txt); font-family:Heebo,system-ui,sans-serif; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--pink);text-decoration:none}
+/* ---------- header ---------- */
+header{
+  position:sticky; top:0; z-index:60; display:flex; align-items:center; gap:14px;
+  padding:14px 22px; border-bottom:1px solid var(--line);
+  background:rgba(11,7,16,.86); backdrop-filter:blur(16px);
+}
+.logo{display:flex;align-items:center;gap:11px}
+.logo .mark{
+  width:40px;height:40px;border-radius:13px;display:grid;place-items:center;
+  background:rgba(240,166,208,.14); color:var(--pink); font-size:19px;
+  border:1px solid rgba(240,166,208,.25);
+}
+.logo h1{font-family:var(--serif); font-size:18px; letter-spacing:.06em;
+  background:linear-gradient(90deg,#f7c9e3,#c9b0fb); -webkit-background-clip:text; background-clip:text; color:transparent}
+.searchwrap{margin-inline-start:auto; position:relative}
+.searchwrap input{
+  width:min(46vw,330px); height:40px; border-radius:12px; padding:0 38px 0 14px;
+  background:rgba(255,255,255,.05); border:1px solid var(--line); color:var(--txt);
+  font-family:inherit; font-size:14px; outline:none;
+}
+.searchwrap input:focus{border-color:rgba(240,166,208,.5); background:rgba(255,255,255,.08)}
+.searchwrap .ic{position:absolute; inset-inline-end:12px; top:11px; color:var(--dim); pointer-events:none}
+/* ---------- layout ---------- */
+.shell{display:grid; grid-template-columns:250px 1fr; gap:24px; max-width:1440px; margin:0 auto; padding:24px 22px 90px}
+aside{position:sticky; top:82px; align-self:start; display:flex; flex-direction:column; gap:16px}
+.navbox, .exportbox{
+  background:linear-gradient(180deg,var(--card),var(--card2)); border:1px solid var(--line);
+  border-radius:18px; padding:14px;
+}
+.navbox p, .exportbox p{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.navbox a{display:block;padding:8px 10px;border-radius:10px;color:var(--txt);font-size:14px;opacity:.85}
+.navbox a:hover{background:rgba(240,166,208,.1);opacity:1}
+.exportbox button{
+  width:100%; margin-bottom:8px; padding:10px; border-radius:11px; cursor:pointer;
+  background:rgba(255,255,255,.05); border:1px solid var(--line); color:var(--txt);
+  font-family:inherit; font-size:13px; text-align:start;
+}
+.exportbox button:hover{background:rgba(240,166,208,.13);border-color:rgba(240,166,208,.35)}
+.exportbox button:last-child{margin-bottom:0}
+.note{font-size:12px;color:var(--dim);line-height:1.65;padding:0 4px}
+/* ---------- main ---------- */
+h2.sec{font-family:var(--serif); font-size:15px; letter-spacing:.05em; color:#d9c8ea;
+  margin:26px 0 12px; display:flex; align-items:center; gap:10px}
+h2.sec:first-of-type{margin-top:0}
+h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(215px,1fr)); gap:12px}
+.card{
+  position:relative; display:flex; gap:12px; align-items:center; padding:13px;
+  border-radius:17px; border:1px solid var(--line); cursor:pointer;
+  background:linear-gradient(160deg,var(--card),var(--card2));
+  transition:transform .18s, border-color .18s, box-shadow .18s;
+}
+.card:hover{transform:translateY(-3px); border-color:rgba(240,166,208,.4); box-shadow:0 14px 34px rgba(0,0,0,.45), 0 0 0 1px rgba(240,166,208,.18)}
+.card.main{border-color:rgba(240,166,208,.55); box-shadow:0 0 26px rgba(240,166,208,.18) inset}
+.av{
+  width:52px;height:52px;border-radius:14px;flex:0 0 auto;display:grid;place-items:center;
+  background:rgba(255,255,255,.06); border:1px solid var(--line); font-size:21px; color:var(--dim);
+  overflow:hidden;
+}
+.av img{width:100%;height:100%;object-fit:cover}
+.meta{min-width:0}
+.role{font-size:10.5px;font-weight:600;letter-spacing:.1em;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:6px}
+.r-main{background:rgba(240,166,208,.18);color:var(--pink)}
+.r-spouse{background:rgba(140,232,240,.15);color:var(--cyan)}
+.r-parent{background:rgba(142,240,180,.14);color:var(--green)}
+.r-other{background:rgba(245,215,140,.14);color:var(--amber)}
+.nm{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub{font-size:11.5px;color:var(--dim);margin-top:4px;font-variant-numeric:tabular-nums}
+/* ---------- overlay / loader ---------- */
+#load{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:rgba(11,7,16,.94);text-align:center;padding:24px}
+#load .ring{width:52px;height:52px;border-radius:50%;border:3px solid rgba(255,255,255,.12);border-top-color:var(--pink);animation:spin .9s linear infinite;margin:0 auto 18px}
+@keyframes spin{to{transform:rotate(360deg)}}
+#load p{font-size:14px;color:var(--dim);max-width:420px;line-height:1.7}
+#load b{color:var(--txt);display:block;margin-bottom:8px;font-size:15px}
+/* ---------- detail modal ---------- */
+#modal{position:fixed;inset:0;z-index:150;display:none;place-items:center;background:rgba(5,3,8,.78);backdrop-filter:blur(6px);padding:20px}
+#modal.on{display:grid}
+.sheet{
+  width:min(560px,100%); max-height:86vh; overflow:auto; border-radius:22px; padding:24px;
+  background:linear-gradient(180deg,#1d1229,#130c1c); border:1px solid rgba(240,166,208,.25);
+  box-shadow:0 30px 90px rgba(0,0,0,.7);
+}
+.sheet h3{font-family:var(--serif);font-size:22px;margin-bottom:4px}
+.sheet .x{float:left;cursor:pointer;color:var(--dim);font-size:20px;line-height:1}
+.rows{margin-top:16px;display:flex;flex-direction:column;gap:1px;border-radius:14px;overflow:hidden}
+.row{display:flex;gap:14px;padding:11px 14px;background:rgba(255,255,255,.035);font-size:13.5px}
+.row span:first-child{width:120px;flex:0 0 auto;color:var(--dim);font-size:12.5px}
+.row span:last-child{word-break:break-word}
+/* ---------- assistant ---------- */
+#fab{position:fixed;inset-inline-start:22px;bottom:22px;z-index:120;padding:13px 20px;border-radius:30px;cursor:pointer;
+  background:linear-gradient(90deg,#f0a6d0,#b98cf5); color:#2a1030; font-weight:700; font-family:inherit; font-size:14px;
+  border:0; box-shadow:0 14px 40px rgba(185,140,245,.4)}
+#panel{position:fixed;inset-inline-start:22px;bottom:22px;z-index:130;width:min(400px,calc(100vw - 44px));
+  display:none; flex-direction:column; max-height:76vh; border-radius:20px; overflow:hidden;
+  background:#140d1e; border:1px solid rgba(185,140,245,.3); box-shadow:0 30px 80px rgba(0,0,0,.7)}
+#panel.on{display:flex}
+#panel .top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}
+#panel .top b{font-family:var(--serif);font-size:15px}
+#panel .top i{cursor:pointer;font-style:normal;color:var(--dim);font-size:19px}
+#log{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px;font-size:13.5px;line-height:1.65}
+.msg{padding:10px 13px;border-radius:14px;max-width:92%}
+.msg.u{align-self:flex-start;background:rgba(240,166,208,.16)}
+.msg.a{align-self:flex-end;background:rgba(255,255,255,.055)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;padding:0 14px 10px}
+.chips button{font-size:11.5px;padding:6px 11px;border-radius:20px;cursor:pointer;font-family:inherit;
+  background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--dim)}
+.chips button:hover{color:var(--txt);border-color:rgba(240,166,208,.4)}
+#panel form{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
+#panel input{flex:1;height:40px;border-radius:11px;padding:0 12px;background:rgba(255,255,255,.05);
+  border:1px solid var(--line);color:var(--txt);font-family:inherit;outline:none;font-size:13.5px}
+#panel button.go{height:40px;padding:0 18px;border-radius:11px;border:0;cursor:pointer;font-family:inherit;
+  font-weight:700;background:linear-gradient(90deg,#f0a6d0,#b98cf5);color:#2a1030}
+footer{border-top:1px solid var(--line);padding:18px;text-align:center;font-family:var(--serif);
+  font-size:11px;letter-spacing:.16em;color:rgba(255,255,255,.32)}
+@media(max-width:860px){
+  .shell{grid-template-columns:1fr}
+  aside{position:static;order:2}
+  .searchwrap input{width:44vw}
+}
 </style>
 </head>
 <body>
-<header><div class="header"><div><h1>עץ המשפחה</h1><div class="sub">אלין אורן</div></div><button id="reset">↩ התחלה</button></div></header>
-<main>
 
-<section class="ai-wrap" aria-label="עוזר משפחה">
-  <div class="ai-head">
-    <div class="ai-title">🤖 עוזר המשפחה</div>
-    <div class="ai-status">יודע לענות לפי המידע שמופיע באתר ולשמור את ההקשר של השיחה</div>
+<header>
+  <div class="logo">
+    <div class="mark">✦</div>
+    <h1>FAMILY INTELLIGENCE</h1>
   </div>
-  <div id="aiChat" class="ai-chat" aria-live="polite"></div>
-  <div class="ai-bottom">
-    <div class="ai-inputrow">
-      <input id="aiInput" type="text" placeholder="למשל: איפה גרה הסבתא של אלין?" autocomplete="off">
-      <button id="aiSend" type="button">שלח</button>
-    </div>
-    <div class="ai-quick">
-      <button type="button" data-q="תן לי פרטים מלאים על אלין">פרטים על אלין</button>
-      <button type="button" data-q="מי ההורים של אלין?">הורים</button>
-      <button type="button" data-q="מי האחים של אלין?">אחים</button>
-      <button type="button" data-q="מי הסבים של אלין?">סבים וסבתות</button>
-    </div>
+  <div class="searchwrap">
+    <input id="q" placeholder="חיפוש בעץ…" autocomplete="off">
+    <span class="ic">⌕</span>
   </div>
-</section>
-<div class="help">האדם שנבחר נמצא במרכז. לחצו על <b>„פתח משפחה”</b> כדי לעבור לאותו אדם ולהציג את ההורים, האחים והילדים שלו.</div>
-<div id="tree"></div>
+</header>
 
-<section class="ai-box">
-  <div class="ai-head">
-    <div>
-      <div class="ai-title">🤖 עוזר המשפחה</div>
-      <div class="ai-sub">שואל ועונה רק לפי המידע שמופיע באתר</div>
+<div class="shell">
+  <aside>
+    <div class="navbox" id="nav"></div>
+    <div class="exportbox">
+      <p>ייצוא</p>
+      <button onclick="exportJSON()">⬇ ייצוא כל הנתונים (JSON)</button>
+      <button onclick="exportPNG()">⬇ ייצוא תמונת העץ (PNG)</button>
+      <button onclick="reload()">↻ רענון מהמקור</button>
     </div>
-    <button id="clearChat" class="ai-clear" type="button">נקה</button>
+    <div class="note" id="note">הנתונים נשלפים בזמן אמת ממאגר אגרון לפי תעודות הזהות. הגיל מחושב מתאריך הלידה. רשומות חסרות מוצגות כ„לא ידוע”.</div>
+  </aside>
+
+  <main id="main"></main>
+</div>
+
+<footer>FAMILY INTELLIGENCE</footer>
+
+<button id="fab" onclick="togglePanel(1)">✦ שאל את העוזר</button>
+
+<div id="panel">
+  <div class="top"><b>✦ העוזר המשפחתי</b><i onclick="togglePanel(0)">×</i></div>
+  <div id="log"></div>
+  <div class="chips">
+    <button onclick="ask('מי האבא?')">מי האבא?</button>
+    <button onclick="ask('מה הכתובת?')">מה הכתובת?</button>
+    <button onclick="ask('מה הטלפון?')">מה הטלפון?</button>
+    <button onclick="ask('בני זוג')">בני זוג</button>
+    <button onclick="ask('גילים')">גילים</button>
   </div>
-  <div id="chatMessages" class="chat-messages">
-    <div class="msg ai">שלום! אפשר לשאול אותי על כל אדם שמופיע בעץ: שמות, הורים, אחים, ילדים, כתובות, תאריכי לידה, תעודות זהות, טלפונים ועוד. אני גם שומר הקשר בין שאלות המשך.</div>
-  </div>
-  <form id="chatForm" class="chat-form">
-    <input id="chatInput" autocomplete="off" placeholder="לדוגמה: איך קוראים לסבתא של אלין?" />
-    <button type="submit">שלח</button>
+  <form onsubmit="event.preventDefault();ask(this.i.value);this.i.value=''">
+    <input name="i" placeholder="שאל שאלה…" autocomplete="off">
+    <button class="go">שלח</button>
   </form>
-  <div class="chat-examples">דוגמאות: „איפה היא גרה?” · „מי ההורים שלה?” · „ומה הטלפון שלו?”</div>
-</section>
-</main>
+</div>
 
-<div id="modal"><div class="modal">
-<div class="modalhead"><div><div id="modalName" class="modalname"></div><div id="modalRel" class="modalrel"></div></div><button class="close">סגור</button></div>
-<div id="modalGrid" class="grid"></div>
-</div></div>
+<div id="load">
+  <div>
+    <div class="ring"></div>
+    <b id="loadT">מאתר את הרשומות…</b>
+    <p id="loadS">שולף נתונים ממאגר אגרון עבור 035711803 ו‑036109486</p>
+  </div>
+</div>
+
+<div id="modal" onclick="if(event.target===this)closeSheet()"><div class="sheet" id="sheet"></div></div>
 
 <script>
-const people={
- orin:{name:"אלין אורן",gender:"נקבה",parents:["eli","ninet"],siblings:["dorin"],children:[]},
- dorin:{name:"דורין אורן",gender:"נקבה",id:"328079488",birth:"01/09/2005",status:"רווקה",address:"יהודה הלוי 10, אשדוד (דירה לא ידועה)",parents:["eli","ninet"],siblings:["orin"],children:[]},
- eli:{name:"אלי אורן",gender:"זכר",id:"40295610",birth:"26/02/1981",status:"נשוי",phone:"08-8677191",address:"עינבר 13/2, אשדוד",oldAddress:"יהודה הלוי 10/30, אשדוד",parents:["eliyahu","tsitsino"],children:["orin","dorin"]},
- ninet:{name:"נינט אורן",gender:"נקבה",id:"66542150",birth:"13/10/1984",status:"נשואה",address:"האלמוגים 2/30, אשדוד",oldAddress:"יהודה הלוי 10/30, אשדוד",parents:["iliya","tsiela"],children:["orin","dorin"]},
- eliyahu:{name:"אליהו ציצואשוילי",gender:"זכר",id:"14938757",birth:"17/03/1937",birthCountry:"ברית המועצות",immigration:"07/1973",status:"נשוי",address:"האלמוגים 2/30, אשדוד",children:["eli"]},
- tsitsino:{name:"ציצינו ציצואשוילי",gender:"נקבה",id:"14938765",birth:"24/02/1948",birthCountry:"ברית המועצות",immigration:"07/1973",status:"נשואה",address:"האלמוגים 2/30, אשדוד",children:["eli"]},
- iliya:{name:"איליה מירילשוילי",gender:"זכר",id:"14558290",birth:"14/11/1938",birthCountry:"ברית המועצות",immigration:"23/07/1972",status:"נשוי",statusNote:"מסומן במאגר כנפטר",address:"שפירא אברהם 1687, אשדוד",children:["ninet","dani","michael","mazia"]},
- tsiela:{name:"ציאלה מירילשוילי",gender:"נקבה",id:"14558308",birth:"20/02/1944",birthCountry:"ברית המועצות",immigration:"07/1972",status:"אלמנה",address:"שפירא אברהם 1687/19, אשדוד",children:["ninet","dani","michael","mazia"]},
- dani:{name:"דני מילר",gender:"זכר",id:"14558316",birth:"15/03/1966",status:"נשוי",address:"שבי ציון 27/10, אשדוד",parents:["iliya","tsiela"],siblings:["ninet","michael","mazia"]},
- michael:{name:"מיכאל נאור מירילשוילי",gender:"זכר",id:"14558332",birth:"25/05/1970",status:"נשוי",address:"בית אל 23/4, אשקלון",parents:["iliya","tsiela"],siblings:["ninet","dani","mazia"]},
- mazia:{name:"מזיה מנשרוב",gender:"נקבה",id:"14558324",birth:"21/12/1967",status:"נשואה",phone:"08-6730611",address:"שד׳ שפירא 66/34, אשקלון",oldAddress:"הפורצים 455/23, אשקלון",parents:["iliya","tsiela"],siblings:["ninet","dani","michael"]}
+/* ============================================================
+   מקור נתונים — מאגר אגרון (AGRON2006) דרך פרוקסי טווחים
+   ============================================================ */
+const API  = "https://maagarim-web-search-api-k902.onrender.com/api/protected-range";
+const DATA = "https://media.githubusercontent.com/media/BodekOktzim/maagarim-eg-el-fa/main/datasets/AGRON2006.txt";
+const SIZE = 1841092492;
+const IDS  = ["035711803", "036109486"];
+
+const DB = { people: {}, images: {}, order: [] };
+
+const get = async (s, e) => {
+  const r = await fetch(`${API}?url=${encodeURIComponent(DATA)}&start=${s}&end=${e}`);
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  return r.text();
 };
-let focus="orin";
 
-function getChildren(id){
- if(!people[id])return [];
- return [...new Set([...(people[id].children||[]),...Object.keys(people).filter(x=>(people[x].parents||[]).includes(id))])];
-}
-function relationFor(fromId,toId){
- if(!people[fromId]||!people[toId])return "";
- if(fromId===toId)return"הנשוא";
- const from=people[fromId],to=people[toId];
- if((from.parents||[]).includes(toId))return to.gender==="נקבה"?"אמא":"אבא";
- if((from.siblings||[]).includes(toId))return to.gender==="נקבה"?"אחות":"אח";
- if(getChildren(fromId).includes(toId))return to.gender==="נקבה"?"בת":"בן";
- for(const pid of from.parents||[]){
-   const parent=people[pid]; if(!parent)continue;
-   const side=parent.gender==="נקבה"?"אמא":"אבא";
-   if((parent.parents||[]).includes(toId))
-     return to.gender==="נקבה"?`סבתא מצד ${side}`:`סבא מצד ${side}`;
-   const sibs=[...(parent.siblings||[]),...Object.keys(people).filter(x=>x!==pid&&(people[x].parents||[]).some(g=>(parent.parents||[]).includes(g)))];
-   const us=[...new Set(sibs)];
-   if(us.includes(toId))return to.gender==="נקבה"?`דודה מצד ${side}`:`דוד מצד ${side}`;
-   for(const u of us)if(getChildren(u).includes(toId))
-     return to.gender==="נקבה"?`בת דודה מצד ${side}`:`בן דוד מצד ${side}`;
- }
- if((from.siblings||[]).some(x=>getChildren(x).includes(toId)))return to.gender==="נקבה"?"אחיינית":"אחיין";
- if(getChildren(fromId).some(x=>getChildren(x).includes(toId)))return to.gender==="נקבה"?"נכדה":"נכד";
- return to.gender==="נקבה"?"קרובת משפחה":"קרוב משפחה";
-}
-function relation(id){return relationFor("orin",id);}
-function button(text,cls,fn){const b=document.createElement("button");b.type="button";b.className=cls;b.textContent=text;b.onclick=fn;return b}
-function card(id){
- const p=people[id], c=document.createElement("div");c.className="card";
- const badge=document.createElement("div");badge.className="badge";badge.textContent=relation(id);
- const n=document.createElement("div");n.className="name";n.textContent=p.name;
- const sm=document.createElement("div");sm.className="small";sm.textContent=p.birth||"";
- c.append(badge,n,sm,button("👨‍👩‍👧‍👦 פתח משפחה","open",()=>select(id)),button("פרטים מלאים","details",()=>details(id)));
- return c;
-}
-function section(title,ids){
- ids=(ids||[]).filter(id=>people[id]);if(!ids.length)return;
- const s=document.createElement("section");s.className="section";
- const t=document.createElement("div");t.className="section-title";t.textContent=title;
- const cs=document.createElement("div");cs.className="cards";ids.forEach(id=>cs.append(card(id)));
- s.append(t,cs);document.getElementById("tree").append(s);
-}
-function select(id){if(!people[id])return;focus=id;render();scrollTo({top:0,behavior:"smooth"})}
-function render(){
- const root=document.getElementById("tree");root.replaceChildren();
- const p=people[focus];
- const cur=document.createElement("div");cur.className="current";cur.textContent="האדם שנבחר";
- const person=document.createElement("div");person.className="person";
- const b=document.createElement("div");b.className="badge";b.textContent=relation(focus);
- const n=document.createElement("div");n.className="name";n.textContent=p.name;
- const sm=document.createElement("div");sm.className="small";sm.textContent=p.birth||"";
- const a=document.createElement("div");a.className="actions";
- a.append(button("👨‍👩‍👧‍👦 פתח משפחה","primary",()=>select(focus)),button("פרטים מלאים","secondary",()=>details(focus)),button("חזרה לאלין","secondary full",()=>{focus="orin";render();scrollTo({top:0,behavior:"smooth"})}));
- person.append(b,n,sm,a);root.append(cur,person);
- const con=document.createElement("div");con.className="connector";root.append(con);
- section("הורים",p.parents);
- section("אחים ואחיות",(p.siblings||[]).filter(x=>x!==focus));
- section("ילדים",p.children);
- if(!p.parents?.length&&!p.siblings?.length&&!p.children?.length){const e=document.createElement("div");e.className="empty";e.textContent="אין קשרי משפחה נוספים שהוזנו.";root.append(e)}
- const tip=document.createElement("div");tip.className="tip";tip.textContent="לחיצה על „פתח משפחה” מציגה את המשפחה של האדם שנבחר במרכז.";root.append(tip);
-}
-function details(id){
- const p=people[id];document.getElementById("modalName").textContent=p.name;document.getElementById("modalRel").textContent=relation(id);
- const grid=document.getElementById("modalGrid");grid.replaceChildren();
- const fields={id:"תעודת זהות (דמה)",birth:"תאריך לידה",status:"מצב אישי",phone:"טלפון",address:"כתובת מעודכנת לשנת 2020",oldAddress:"כתובת ישנה מעודכנת לשנת 2006",birthCountry:"ארץ לידה",immigration:"תאריך עלייה",statusNote:"הערה"};
- for(const k in fields)if(p[k]!==undefined){const f=document.createElement("div");f.className="field";f.innerHTML="<div class='label'></div><div class='value'></div>";f.children[0].textContent=fields[k];f.children[1].textContent=p[k]||"—";grid.append(f)}
- [["הורים",p.parents],["ילדים",p.children],["אחים/אחיות",p.siblings]].forEach(([lab,ids])=>{if(!ids?.length)return;const f=document.createElement("div");f.className="field";f.innerHTML="<div class='label'></div><div class='value'></div>";f.children[0].textContent=lab;f.children[1].textContent=ids.map(x=>people[x]?.name).filter(Boolean).join(" • ");grid.append(f)});
- document.getElementById("modal").classList.add("show");document.body.style.overflow="hidden";
-}
-function close(){document.getElementById("modal").classList.remove("show");document.body.style.overflow=""}
-document.getElementById("reset").onclick=()=>{focus="orin";render();scrollTo({top:0,behavior:"smooth"})};
-document.querySelector(".close").onclick=close;
-document.getElementById("modal").onclick=e=>{if(e.target.id==="modal")close()};
-document.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
-render();
-
-/* Local family AI: deterministic, context-aware, and never invents values. */
-const aiState={lastPerson:null};
-
-function norm(t){
- return String(t||"").toLowerCase()
-  .replace(/[?؟!,.;:"'״׳(){}\[\]]/g," ")
-  .replace(/\s+/g," ").trim();
-}
-function personAliases(id){
- const p=people[id]; if(!p)return [];
- const a=[p.name,id];
- if(p.name==="אלין אורן")a.push("אלין","אלין אורן");
- if(p.name==="דורין אורן")a.push("דורין");
- if(p.name==="אלי אורן")a.push("אלי","אבא");
- if(p.name==="נינט אורן")a.push("נינט","אמא");
- return a.map(norm);
-}
-function findPeople(text){
- const q=norm(text), found=[];
- Object.keys(people).forEach(id=>{
-   const aliases=personAliases(id);
-   if(aliases.some(a=>a && q.includes(a)))found.push(id);
- });
- return [...new Set(found)];
-}
-function firstRelId(id,kind){
- const p=people[id]||{};
- if(kind==="mother"||kind==="father"){
-   return (p.parents||[]).find(x=>people[x] && ((kind==="mother"&&people[x].gender==="נקבה")||(kind==="father"&&people[x].gender==="זכר")));
- }
- if(kind==="parents")return p.parents||[];
- if(kind==="siblings")return p.siblings||[];
- if(kind==="children")return p.children||[];
- return null;
-}
-function relationWord(id, target){
- const p=people[id]; if(!p)return "";
- if(target==="mother")return "אמא";
- if(target==="father")return "אבא";
- return relation(id);
-}
-function valueLabel(p,key){
- const labels={name:"השם",id:"תעודת הזהות",birth:"תאריך הלידה",status:"המצב האישי",phone:"הטלפון",address:"הכתובת המעודכנת לשנת 2020",oldAddress:"הכתובת הישנה מעודכנת לשנת 2006",birthCountry:"ארץ הלידה",immigration:"תאריך העלייה",statusNote:"הערה"};
- return labels[key]||key;
-}
-function answerForQuestion(question){
- const q=norm(question);
- let ids=findPeople(q);
-
- // Resolve pronouns / contextual follow-up: היא/הוא/לה/לו/שלה/שלו וכו'.
- if(!ids.length && aiState.lastPerson) ids=[aiState.lastPerson];
-
- // "הסבתא/סבא/אמא/אבא/אחות..." queries.
- let subject=ids[0] || aiState.lastPerson;
- const kin=[
-  {words:["סבתא","סבתה","סבתו"], kind:"grandmother"},
-  {words:["סבא","סבו","סבה"], kind:"grandfather"},
-  {words:["אמא","אמה","אמו","אימא"], kind:"mother"},
-  {words:["אבא","אביה","אביו"], kind:"father"},
-  {words:["אחות","אחותה","אחותו"], kind:"sister"},
-  {words:["אח","אחיה","אחיו"], kind:"brother"},
-  {words:["הורים","הוריה","הוריו"], kind:"parents"},
-  {words:["ילדים","ילדיה","ילדיו"], kind:"children"},
-  {words:["אחים","אחיה","אחיו"], kind:"siblings"}
- ];
- let rel=null;
- for(const r of kin)if(r.words.some(w=>q.includes(norm(w)))){rel=r.kind;break;}
-
- if(rel && subject){
-   let result=[];
-   const p=people[subject];
-   if(rel==="mother")result=firstRelId(subject,"mother")?[firstRelId(subject,"mother")]:[];
-   else if(rel==="father")result=firstRelId(subject,"father")?[firstRelId(subject,"father")]:[];
-   else if(rel==="parents")result=p.parents||[];
-   else if(rel==="children")result=p.children||[];
-   else if(rel==="siblings")result=(p.siblings||[]).filter(x=>x!==subject);
-   else if(rel==="sister")result=(p.siblings||[]).filter(x=>people[x]?.gender==="נקבה");
-   else if(rel==="brother")result=(p.siblings||[]).filter(x=>people[x]?.gender==="זכר");
-   else if(rel==="grandmother"||rel==="grandfather"){
-     const wanted=rel==="grandmother"?"נקבה":"זכר";
-     result=(p.parents||[]).flatMap(par=>people[par]?.parents||[]).filter(x=>people[x]?.gender===wanted);
-   }
-   result=[...new Set(result)];
-   if(!result.length)return "לא נמצא במידע שבאתר.";
-   aiState.lastPerson=result[0];
-   if(result.length===1)return `${people[result[0]].name}`;
-   return result.map(x=>people[x].name).join(" ו");
- }
-
- if(!subject)return "לא מצאתי אדם בשם הזה במידע שבאתר. נסה לכתוב את השם המלא.";
-
- // Determine requested field.
- const fieldRules=[
-  {keys:["כתובת","גרה","גר","גרים","מגורים","איפה היא גרה","איפה הוא גר"],field:"address"},
-  {keys:["כתובת ישנה","כתובת קודמת"],field:"oldAddress"},
-  {keys:["טלפון","נייד","מספר טלפון"],field:"phone"},
-  {keys:["תעודת זהות","ת.ז","תז"],field:"id"},
-  {keys:["תאריך לידה","נולד","נולדה","יום הולדת"],field:"birth"},
-  {keys:["מצב משפחתי","נשוי","נשואה","רווק","רווקה"],field:"status"},
-  {keys:["ארץ לידה"],field:"birthCountry"},
-  {keys:["עלייה","עלה","עלתה"],field:"immigration"}
- ];
- for(const rule of fieldRules){
-   if(rule.keys.some(k=>q.includes(norm(k)))){
-     if(people[subject][rule.field]!==undefined && people[subject][rule.field]){
-       aiState.lastPerson=subject;
-       return `${valueLabel(people[subject],rule.field)} של ${people[subject].name}: ${people[subject][rule.field]}`;
-     }
-     return "לא נמצא במידע שבאתר.";
-   }
- }
- if(q.includes("איך קוראים")||q.includes("מה השם")||q.includes("מי זה")||q.includes("מי זאת")){
-   aiState.lastPerson=subject; return people[subject].name;
- }
- return `לפי המידע באתר, מדובר ב${people[subject].name}. אפשר לשאול למשל: איפה הוא/היא גר/ה, מי ההורים, מי האחים, מה הטלפון או מה תאריך הלידה.`;
-}
-function addMsg(text,type){
- const box=document.getElementById("chatMessages");
- const d=document.createElement("div");d.className="msg "+type;d.textContent=text;box.appendChild(d);box.scrollTop=box.scrollHeight;
-}
-document.getElementById("chatForm").addEventListener("submit",e=>{
- e.preventDefault();
- const input=document.getElementById("chatInput"),q=input.value.trim();if(!q)return;
- addMsg(q,"user");input.value="";
- const ans=answerForQuestion(q);setTimeout(()=>addMsg(ans,"ai"),80);
-});
-document.getElementById("clearChat").addEventListener("click",()=>{
- aiState.lastPerson=null;
- document.getElementById("chatMessages").innerHTML='<div class="msg ai">ההקשר נמחק. אפשר להתחיל שיחה חדשה.</div>';
-});
-
-/* ===== Local family knowledge assistant ===== */
-(function(){
-  const chat=document.getElementById("aiChat");
-  const input=document.getElementById("aiInput");
-  const send=document.getElementById("aiSend");
-  let lastPerson="orin";
-  let pending=null;
-
-  function norm(s){
-    return String(s||"")
-      .toLowerCase()
-      .replace(/[?!.,"'״׳:;(){}\[\]<>]/g," ")
-      .replace(/\s+/g," ")
-      .trim();
+/* חיפוש בינארי לפי ת״ז (הקובץ ממוין עולה) */
+async function findRecord(rawId) {
+  const id = String(rawId).replace(/\D/g, "").padStart(9, "0");
+  const target = parseInt(id, 10);
+  let lo = 0, hi = SIZE;
+  for (let i = 0; i < 60 && hi - lo > 1500; i++) {
+    const mid = Math.floor((lo + hi) / 2);
+    let txt;
+    try { txt = await get(mid, mid + 700); } catch (e) { hi = mid; continue; }
+    const nl = txt.indexOf("\n");
+    if (nl < 0) { lo = mid; continue; }
+    const line = txt.slice(nl + 1).split("\n")[0] || "";
+    const cur = parseInt((line.split("\t")[0] || "").trim(), 10);
+    if (!cur) { hi = mid; continue; }
+    if (cur === target) return parse(line, id);
+    if (cur < target) lo = mid; else hi = mid;
   }
-  function cleanName(s){
-    return norm(s).replace(/\b(של|על|את|את|ה|הא|איפה|אימא|אמא|אבא|מי|מה|איך|קוראים|גרה|גר|היא|הוא|תן|תני|לי|את|כל|הפרטים|מלאים|מלא|אחים|אחיות|הורים|ילדים|סבתא|סבא|דודה|דוד)\b/g," ").replace(/\s+/g," ").trim();
+  /* סריקה סופית בחלון */
+  const a = Math.max(0, lo - 400), b = Math.min(SIZE, hi + 4000);
+  const txt = await get(a, b);
+  for (const line of txt.split("\n")) {
+    const f = line.split("\t");
+    if ((f[0] || "").trim() === id) return parse(line, id);
   }
-  function addMsg(text,type="bot",options=[]){
-    const m=document.createElement("div");m.className="ai-msg "+type;
-    const t=document.createElement("div");t.textContent=text;m.append(t);
-    if(options.length){
-      const box=document.createElement("div");box.className="ai-options";
-      options.forEach(o=>{
-        const b=document.createElement("button");b.type="button";b.className="ai-option";b.textContent=o.label;
-        b.onclick=()=>{ if(o.id){ pending=null; addMsg(o.label,"user"); answer("","",o.id); } };
-        box.append(b);
-      });
-      m.append(box);
-    }
-    chat.append(m);chat.scrollTop=chat.scrollHeight;
-  }
-  function addOpenButton(id,label="פתח את הפרטים המלאים"){
-    const b=document.createElement("button");b.type="button";b.className="ai-open";b.textContent=label;
-    b.onclick=()=>{focus=id;render();details(id);lastPerson=id};
-    const wrap=document.createElement("div");wrap.append(b);
-    const last=chat.lastElementChild;if(last)last.append(wrap);
-  }
-  function names(ids){return (ids||[]).map(id=>people[id]?.name).filter(Boolean)}
-  function uniqueMatches(term){
-    const q=norm(term);
-    if(!q)return [];
-    return Object.entries(people).filter(([id,p])=>{
-      const n=norm(p.name);
-      return n===q || n.split(" ").includes(q) || n.includes(q);
-    }).map(([id])=>id);
-  }
-  function resolveExplicitName(q){
-    // Strong exact matches first, including common short forms.
-    const aliases={
-      "אלין":"orin","אלין אורן":"orin","דורין":"dorin","דורין אורן":"dorin",
-      "אלי":"eli","אלי אורן":"eli","נינט":"ninet","נינט אורן":"ninet",
-      "אליהו":"eliyahu","אליהו ציצואשוילי":"eliyahu","ציצינו":"tsitsino","ציצינו ציצואשוילי":"tsitsino",
-      "איליה":"iliya","איליה מירילשוילי":"iliya","ציאלה":"tsiela","ציאלה מירילשוילי":"tsiela",
-      "דני":"dani","דני מילר":"dani","מיכאל":"michael","מיכאל נאור מירילשוילי":"michael",
-      "מזיה":"mazia","מזיה מנשרוב":"mazia"
-    };
-    if(aliases[q])return [aliases[q]];
-    return uniqueMatches(q);
-  }
-  function relationOf(id,from="orin"){return relationFor(from,id);}
-  function sideLabel(pid){return people[pid]?.gender==="נקבה"?"מצד אמא":"מצד אבא";}
-  function siblingIds(pid){
-    const p=people[pid];if(!p)return [];
-    const inferred=Object.keys(people).filter(x=>x!==pid&&(people[x].parents||[]).some(g=>(p.parents||[]).includes(g)));
-    return [...new Set([...(p.siblings||[]),...inferred])];
-  }
-  function findByRelation(baseId,rel){
-    const base=people[baseId];if(!base)return [];
-    if(rel==="אמא"||rel==="אבא")return (base.parents||[]).filter(id=>rel==="אמא"?people[id]?.gender==="נקבה":people[id]?.gender==="זכר");
-    if(rel==="אחים")return siblingIds(baseId).filter(x=>x!==baseId);
-    if(rel==="ילדים")return getChildren(baseId);
-    if(rel==="סבים"||rel==="סבתות"){
-      const all=[...new Set((base.parents||[]).flatMap(pid=>people[pid]?.parents||[]))];
-      return rel==="סבתות"?all.filter(x=>people[x]?.gender==="נקבה"):all;
-    }
-    if(rel==="דודים"||rel==="דודות"){
-      const all=[...new Set((base.parents||[]).flatMap(pid=>siblingIds(pid)))];
-      return rel==="דודות"?all.filter(x=>people[x]?.gender==="נקבה"):all.filter(x=>people[x]?.gender==="זכר");
-    }
-    if(rel==="בני דודים"||rel==="בנות דודות"){
-      const all=[...new Set((base.parents||[]).flatMap(pid=>siblingIds(pid).flatMap(getChildren)))];
-      return rel==="בנות דודות"?all.filter(x=>people[x]?.gender==="נקבה"):all.filter(x=>people[x]?.gender==="זכר");
-    }
-    return [];
-  }
+  return null;
+}
 
-  function askDisambiguation(ids,question){
-    pending={ids,question};
-    addMsg("מצאתי כמה אנשים שמתאימים. על מי התכוונת? לחיצה על השם תמשיך את השיחה.", "bot",
-      ids.map(id=>({id,label:people[id].name})));
-  }
-  function openPerson(id){
-    if(!people[id])return;
-    lastPerson=id;
-    focus=id;render();
-  }
-  function fullDetails(id){
-    const p=people[id];
-    if(!p)return;
-    const lines=[];
-    if(p.id)lines.push("ת.ז: "+p.id);
-    if(p.birth)lines.push("תאריך לידה: "+p.birth);
-    if(p.status)lines.push("מצב: "+p.status);
-    if(p.phone)lines.push("טלפון: "+p.phone);
-    if(p.address)lines.push("כתובת מעודכנת לשנת 2020: "+p.address);
-    if(p.oldAddress)lines.push("כתובת ישנה מעודכנת לשנת 2006: "+p.oldAddress);
-    if(p.birthCountry)lines.push("ארץ לידה: "+p.birthCountry);
-    if(p.immigration)lines.push("תאריך עלייה: "+p.immigration);
-    if(p.statusNote)lines.push("הערה: "+p.statusNote);
-    const ps=names(p.parents), ss=names(p.siblings), cs=names(p.children);
-    if(ps.length)lines.push("הורים: "+ps.join(" ו"));
-    if(ss.length)lines.push("אחים/אחיות: "+ss.join(", "));
-    if(cs.length)lines.push("ילדים: "+cs.join(", "));
-    addMsg("אלה הפרטים שיש לי על "+p.name+":\n"+(lines.join("\n")||"לא נמצא מידע נוסף."));
-    openPerson(id);
-    details(id);
-    addOpenButton(id);
-  }
-  function answer(raw="",forced="",forcedId=null){
-    const q=norm(raw);
-    if(forcedId){ fullDetails(forcedId); return; }
-
-    if(!q){
-      addMsg("כתוב לי מה תרצה לדעת. למשל: „איפה היא גרה?”, „מי אבא שלה?”, או „תן לי פרטים מלאים על אלי”.");
-      return;
-    }
-
-    // Follow-up references: היא/הוא/האדם הזה/האישה/האיש/שם המשפחה.
-    let base=lastPerson;
-    const pronoun=/\b(היא|הוא|לה|לו|שלה|שלו|עליה|עליו|אותה|אותו|האישה|האיש|האדם הזה|האדם)\b/.test(q);
-    if(pronoun && lastPerson)base=lastPerson;
-
-    // Explicit "X של Y" relation queries.
-    const relPatterns=[
-      {re:/(?:מי|איך קוראים ל)(?:ה)?אמא של (.+)/,rel:"אמא"},
-      {re:/(?:מי|איך קוראים ל)(?:ה)?אבא של (.+)/,rel:"אבא"},
-      {re:/(?:מי|איך קוראים ל)(?:ה)?אחים? של (.+)/,rel:"אחים"},
-      {re:/(?:מי|איך קוראים ל)(?:ה)?ילדים? של (.+)/,rel:"ילדים"},
-      {re:/(?:מי|מה השמות של )?(?:ה)?סב(?:א|ים) של (.+)/,rel:"סבים"},
-      {re:/(?:מי|מה השמות של )?(?:ה)?סבת(?:א|ות) של (.+)/,rel:"סבתות"},
-      {re:/(?:מי|מה השמות של )?(?:ה)?דודים? מצד אבא(?: של (.+))?/,rel:"דודים",side:"אבא"},
-      {re:/(?:מי|מה השמות של )?(?:ה)?דודות? מצד אבא(?: של (.+))?/,rel:"דודות",side:"אבא"},
-      {re:/(?:מי|מה השמות של )?(?:ה)?דודים? מצד אמא(?: של (.+))?/,rel:"דודים",side:"אמא"},
-      {re:/(?:מי|מה השמות של )?(?:ה)?דודות? מצד אמא(?: של (.+))?/,rel:"דודות",side:"אמא"},
-      {re:/(?:מי|מה השמות של )?(?:ה)?בני הדודים? מצד אבא(?: של (.+))?/,rel:"בני דודים",side:"אבא"},
-      {re:/(?:מי|מה השמות של )?(?:ה)?בנות הדודות? מצד אבא(?: של (.+))?/,rel:"בנות דודות",side:"אבא"},
-      {re:/(?:מי|מה השמות של )?(?:ה)?בני הדודים? מצד אמא(?: של (.+))?/,rel:"בני דודים",side:"אמא"},
-      {re:/(?:מי|מה השמות של )?(?:ה)?בנות הדודות? מצד אמא(?: של (.+))?/,rel:"בנות דודות",side:"אמא"}
-    ];
-    for(const pat of relPatterns){
-      const m=q.match(pat.re);
-      if(m){
-        let tid=base;
-        if(m[1]){
-          const target=resolveExplicitName(cleanName(m[1]));
-          if(target.length>1){askDisambiguation(target,"relation");return}
-          tid=target[0];
-        }
-        if(!tid){addMsg("לא מצאתי אדם בשם הזה במידע של האתר.");return}
-        let ids=findByRelation(tid,pat.rel);
-        if(pat.side){
-          const parentIds=(people[tid]?.parents||[]).filter(pid=>sideLabel(pid)==="מצד "+pat.side);
-          if(pat.rel==="דודים"||pat.rel==="דודות"){
-            ids=ids.filter(id=>parentIds.some(pid=>siblingIds(pid).includes(id)));
-          }else{
-            ids=ids.filter(id=>parentIds.some(pid=>siblingIds(pid).some(x=>getChildren(x).includes(id))));
-          }
-        }
-        if(!ids.length){addMsg("לא נמצא במידע של האתר.");return}
-        if(ids.length===1){
-          const id=ids[0], rp=people[id];
-          addMsg("ל"+people[tid].name+" יש "+relationOf(id,tid)+": "+rp.name+".");
-          lastPerson=id;
-          if(pat.rel==="אמא"||pat.rel==="אבא"||pat.rel==="סבתות"||pat.rel==="סבים"){
-            addOpenButton(id,"פתח את הפרטים של "+rp.name);
-          }
-        }else{
-          addMsg("מצאתי "+ids.length+" אפשרויות:\n"+names(ids).join("\n"));
-          const opts=ids.map(id=>({id,label:people[id].name}));
-          const mbox=document.createElement("div");mbox.className="ai-msg bot";
-          const box=document.createElement("div");box.className="ai-options";
-          opts.forEach(o=>{const b=document.createElement("button");b.className="ai-option";b.textContent=o.label;b.onclick=()=>{addMsg(o.label,"user");fullDetails(o.id)};box.append(b)});
-          mbox.append(box);chat.append(mbox);chat.scrollTop=chat.scrollHeight;
-        }
-        return;
+/* פירוק רשומה */
+function parse(line, id) {
+  const f = line.split("\t").map(x => x.replace(/^"|"$/g, "").trim());
+  const bdIdx = f.findIndex(x => /^\d{4}-\d{2}-\d{2}$/.test(x));
+  let fatherName = "", fatherId = "", motherName = "", motherId = "";
+  if (bdIdx > -1) {
+    for (let i = bdIdx + 1; i < f.length - 3; i++) {
+      if (/^\d{5,9}$/.test(f[i]) && /^\d{5,9}$/.test(f[i + 2])) {
+        fatherName = f[i - 1] || ""; fatherId = f[i];
+        motherName = f[i + 1] || ""; motherId = f[i + 2];
+        break;
       }
     }
+  }
+  const phones = [f[12] || ""].concat((f[f.length - 1] || "").split(",")).filter(x => /\d/.test(x));
+  const city = f[10] || "", street = [f[7], f[8], f[9]].filter(Boolean).join(" ");
+  return {
+    id,
+    first: f[1] || "", last: f[2] || "", maiden: f[3] || "",
+    gender: f[4] || "", status: f[5] || "", marital: f[6] || "",
+    address: [street, city].filter(Boolean).join(", "),
+    city, phones: [...new Set(phones)].join(" · "),
+    birth: bdIdx > -1 ? f[bdIdx] : "",
+    fatherName, fatherId, motherName, motherId
+  };
+}
 
-    // "Where does she/he live?" and address follow-ups.
-    if(/(איפה|היכן).*(גר|גרה|מתגורר|מתגוררת)|(?:כתובת|איפה היא גרה|איפה הוא גר)/.test(q)){
-      const p=people[base];
-      if(p?.address){
-        addMsg("הכתובת של "+p.name+" היא: "+p.address+(p.oldAddress?"\nכתובת ישנה מעודכנת לשנת 2006: "+p.oldAddress:""));
-        addOpenButton(base,"פתח את הפרטים של "+p.name);
-      }else addMsg("לא נמצאה כתובת עבור "+(p?.name||"האדם שנבחר")+" במידע של האתר.");
-      return;
-    }
+const age = b => {
+  if (!b) return null;
+  const d = new Date(b); if (isNaN(d)) return null;
+  const n = new Date();
+  let a = n.getFullYear() - d.getFullYear();
+  if (n.getMonth() < d.getMonth() || (n.getMonth() === d.getMonth() && n.getDate() < d.getDate())) a--;
+  return a;
+};
 
-    // "Full details" — open the person's details window too.
-    if(/פרטים מלאים|כל הפרטים|תן.*פרטים|תביא.*פרטים|פרטי.*מלא/.test(q)){
-      let candidateText=q.replace(/(תן|תביא|לי|את|כל|ה|פרטים|מלאים|מלא|על)/g," ").replace(/\s+/g," ").trim();
-      let ids=resolveExplicitName(candidateText);
-      if(!ids.length && /האדם|היא|הוא|זה|עליה|עליו|לה|לו|אותה|אותו/.test(q))ids=[base];
-      if(ids.length>1){askDisambiguation(ids,"details");return}
-      if(ids.length===1){fullDetails(ids[0]);return}
-      addMsg("על מי תרצה את הפרטים המלאים? אפשר לכתוב שם, למשל „פרטים מלאים על אלי”.");
-      return;
-    }
+/* ============================================================
+   טעינה ובניית העץ
+   ============================================================ */
+async function boot() {
+  const [r1, r2] = await Promise.allSettled([findRecord(IDS[0]), findRecord(IDS[1])]);
+  const a = r1.status === "fulfilled" ? r1.value : null;
+  const b = r2.status === "fulfilled" ? r2.value : null;
 
-    // Detailed side-specific relationship questions relative to the active person.
-    const generic=[
-      {re:/מי (ה)?דודים?(?: של)?/,rel:"דודים"},
-      {re:/מי (ה)?דודות?(?: של)?/,rel:"דודות"},
-      {re:/מי (ה)?בני הדודים?(?: של)?/,rel:"בני דודים"},
-      {re:/מי (ה)?בנות הדודות?(?: של)?/,rel:"בנות דודות"},
-      {re:/מי (ה)?דודים? מצד אבא/,rel:"דודים",side:"אבא"},
-      {re:/מי (ה)?דודות? מצד אבא/,rel:"דודות",side:"אבא"},
-      {re:/מי (ה)?דודים? מצד אמא/,rel:"דודים",side:"אמא"},
-      {re:/מי (ה)?דודות? מצד אמא/,rel:"דודות",side:"אמא"},
-      {re:/מי (ה)?בני הדודים? מצד אבא/,rel:"בני דודים",side:"אבא"},
-      {re:/מי (ה)?בנות הדודות? מצד אבא/,rel:"בנות דודות",side:"אבא"},
-      {re:/מי (ה)?בני הדודים? מצד אמא/,rel:"בני דודים",side:"אמא"},
-      {re:/מי (ה)?בנות הדודות? מצד אמא/,rel:"בנות דודות",side:"אמא"}
-    ];
-    for(const g of generic){
-      if(g.re.test(q)){
-        let ids=findByRelation(base,g.rel);
-        if(g.side){
-          const parentIds=(people[base]?.parents||[]).filter(pid=>sideLabel(pid)==="מצד "+g.side);
-          if(g.rel==="דודים"||g.rel==="דודות")ids=ids.filter(id=>parentIds.some(pid=>siblingIds(pid).includes(id)));
-          else ids=ids.filter(id=>parentIds.some(pid=>siblingIds(pid).some(x=>getChildren(x).includes(id))));
-        }
-        if(!ids.length){addMsg("לא נמצא מידע על הקשר הזה באתר.");return}
-        addMsg(ids.map(id=>relationOf(id,base)+": "+people[id].name).join("\n"));
-        lastPerson=ids[0];
-        return;
-      }
-    }
-
-    // Direct identity/name question.
-    if(/איך קוראים/.test(q)){
-      if(/סבת/.test(q)){
-        const ids=findByRelation(base,"סבתות");
-        if(ids.length===1){addMsg("הסבתא היא "+people[ids[0]].name+".");lastPerson=ids[0];addOpenButton(ids[0])}
-        else if(ids.length>1)askDisambiguation(ids,"grandmother");
-        else addMsg("לא נמצא מידע על סבתא.");
-        return;
-      }
-      addMsg("השם הוא "+(people[base]?.name||"לא נמצא")+".");
-      return;
-    }
-
-    // Relationship questions referring to the current person.
-    if(/מי (ה)?הורים|מי האמא|מי האבא/.test(q)){
-      const ids=findByRelation(base,q.includes("אבא")?"אבא":q.includes("אמא")?"אמא":"אמא");
-      if(q.includes("הורים")) {
-        const ps=people[base]?.parents||[];
-        addMsg(ps.length?"ההורים של "+people[base].name+" הם: "+names(ps).join(" ו")+"." :"לא נמצאו הורים.");
-      } else if(ids.length) addMsg((ids.length===1?"ההורה הוא ":"ההורה הוא ")+people[ids[0]].name+".");
-      else addMsg("לא נמצא במידע.");
-      return;
-    }
-    if(/מי.*אחים|אחים.*מי/.test(q)){
-      const ids=people[base]?.siblings||[];
-      addMsg(ids.length?"האחים והאחיות של "+people[base].name+": "+names(ids).join(", ")+".":"לא נמצאו אחים או אחיות.");
-      return;
-    }
-    if(/מי.*ילדים|ילדים.*מי/.test(q)){
-      const ids=people[base]?.children||[];
-      addMsg(ids.length?"הילדים של "+people[base].name+": "+names(ids).join(", ")+".":"לא נמצאו ילדים.");
-      return;
-    }
-
-    // Direct name lookup: unique names open the correct person.
-    const possible=resolveExplicitName(q.replace(/^(תן|תביא|מי|איפה|מה|על|של|פרטים|הפרטים)\s+/,""));
-    if(possible.length===1){
-      lastPerson=possible[0];
-      addMsg("מצאתי את "+people[possible[0]].name+".");
-      addOpenButton(possible[0],"פתח את הפרטים המלאים");
-      return;
-    }
-    if(possible.length>1){askDisambiguation(possible,"name");return}
-
-    addMsg("לא מצאתי תשובה במידע של האתר. אני לא מנחש מידע שלא קיים בו.\nאפשר לשאול על שם, הורים, אחים, ילדים, סבים/סבתות, כתובת, טלפון, ת.ז. או „פרטים מלאים”.");
+  if (!a && !b) {
+    document.getElementById("load").innerHTML =
+      `<div><b>לא נמצאו רשומות</b><p>ייתכן שהשירות בהתעוררות — נסה „רענון מהמקור”.</p></div>`;
+    return;
   }
 
-  function sendQuestion(){
-    const q=input.value.trim();if(!q)return;
-    input.value="";addMsg(q,"user");answer(q);
-  }
-  send.onclick=sendQuestion;
-  input.addEventListener("keydown",e=>{if(e.key==="Enter")sendQuestion()});
-  document.querySelectorAll(".ai-quick button").forEach(b=>b.onclick=()=>{input.value=b.dataset.q;sendQuestion()});
-  addMsg("שלום! אני עוזר המשפחה. אני יכול לחפש בתוך כל האנשים והקשרים שמופיעים באתר. אפשר גם להמשיך שאלה לפי ההקשר — למשל „איפה היא גרה?” אחרי ששאלת על מישהי.");
-})();
+  const isF = p => p && p.gender === "נקבה";
+  const [husband, wife] = (isF(a) && !isF(b)) ? [b, a] : [a, b];
+  if (husband) add(husband, "main", "בעל");
+  if (wife) add(wife, "spouse", "אישה");
 
+  for (const p of [husband, wife]) {
+    if (!p) continue;
+    if (p.fatherId) {
+      const fa = await findRecord(p.fatherId).catch(() => null);
+      if (fa) add(fa, "parent", "אבא של " + p.first);
+    }
+    if (p.motherId) {
+      const mo = await findRecord(p.motherId).catch(() => null);
+      if (mo) add(mo, "parent", "אמא של " + p.first);
+    }
+  }
+
+  render();
+  document.getElementById("load").remove();
+  greet();
+}
+
+function add(p, cls, role) {
+  if (!p || DB.people[p.id]) return;
+  DB.people[p.id] = { ...p, cls, role };
+  DB.order.push(p.id);
+}
+
+/* ============================================================
+   רינדור
+   ============================================================ */
+const GROUPS = [
+  { key: "main",   title: "האדם הראשי" },
+  { key: "spouse", title: "בן / בת הזוג" },
+  { key: "parent", title: "ההורים" }
+];
+
+function render(filter = "") {
+  const main = document.getElementById("main");
+  const q = filter.trim();
+  let html = "";
+
+  for (const g of GROUPS) {
+    let list = DB.order.map(id => DB.people[id]).filter(p => p.cls === g.key);
+    if (q) list = list.filter(p => (p.first + " " + p.last + " " + p.id + " " + p.address).includes(q));
+    if (!list.length) continue;
+    html += `<h2 class="sec">${g.title}</h2><div class="grid">`;
+    for (const p of list) html += card(p);
+    html += `</div>`;
+  }
+
+  if (!html) html = `<h2 class="sec">אין תוצאות</h2><p class="note">נסה מונח אחר.</p>`;
+  main.innerHTML = html;
+
+  document.getElementById("nav").innerHTML =
+    `<p>ניווט</p>` + GROUPS
+      .filter(g => DB.order.some(id => DB.people[id].cls === g.key))
+      .map(g => `<a href="#" onclick="jump('${g.title}');return false">${g.title}</a>`).join("")
+    + `<a href="#" onclick="exportJSON();return false">ייצוא JSON</a>`;
+}
+
+function card(p) {
+  const av = DB.images[p.id]
+    ? `<img src="${DB.images[p.id]}" alt="">`
+    : (p.gender === "נקבה" ? "♀" : "♙");
+  const a = age(p.birth);
+  const cls = { main: "r-main", spouse: "r-spouse", parent: "r-parent" }[p.cls] || "r-other";
+  return `<div class="card ${p.cls === "main" ? "main" : ""}" onclick="sheet('${p.id}')">
+    <div class="av">${av}</div>
+    <div class="meta">
+      <span class="role ${cls}">${p.role}</span>
+      <div class="nm">${p.first} ${p.last}</div>
+      <div class="sub">${a !== null ? "גיל: " + a + " · " : ""}ת״ז: ${p.id}</div>
+    </div>
+  </div>`;
+}
+
+function jump(t) {
+  const h = [...document.querySelectorAll("h2.sec")].find(x => x.textContent.includes(t));
+  if (h) h.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/* ============================================================
+   כרטיס פרטים
+   ============================================================ */
+function sheet(id) {
+  const p = DB.people[id]; if (!p) return;
+  const rows = [
+    ["ת״ז", p.id], ["שם פרטי", p.first || "—"], ["שם משפחה", p.last || "—"],
+    ["שם נעורים", p.maiden || "—"], ["מין", p.gender || "—"],
+    ["גיל", age(p.birth) ?? "—"], ["תאריך לידה", p.birth || "—"],
+    ["מצב משפחתי", p.marital || "—"], ["סטטוס", p.status || "—"],
+    ["כתובת", p.address || "—"], ["טלפון", p.phones || "—"],
+    ["שם האב", p.fatherName || "—"], ["ת״ז האב", p.fatherId || "—"],
+    ["שם האם", p.motherName || "—"], ["ת״ז האם", p.motherId || "—"],
+    ["תפקיד בעץ", p.role]
+  ];
+  document.getElementById("sheet").innerHTML =
+    `<span class="x" onclick="closeSheet()">×</span>
+     <h3>${p.first} ${p.last}</h3>
+     <div class="sub" style="color:var(--dim);font-size:12.5px">${p.role}</div>
+     <div class="rows">${rows.map(r => `<div class="row"><span>${r[0]}</span><span>${r[1]}</span></div>`).join("")}</div>`;
+  document.getElementById("modal").classList.add("on");
+}
+const closeSheet = () => document.getElementById("modal").classList.remove("on");
+
+/* ============================================================
+   עוזר
+   ============================================================ */
+function togglePanel(on) {
+  const p = document.getElementById("panel");
+  p.classList.toggle("on", !!on);
+  if (on) p.querySelector("input").focus();
+}
+
+function push(cls, txt) {
+  const log = document.getElementById("log");
+  const d = document.createElement("div");
+  d.className = "msg " + cls; d.textContent = txt;
+  log.appendChild(d); log.scrollTop = log.scrollHeight;
+}
+
+function greet() {
+  push("a", "שלום! שאל על גילים, כתובות, טלפונים או קשרי משפחה בעץ.");
+}
+
+function ask(q) {
+  q = (q || "").trim(); if (!q) return;
+  push("u", q);
+  const all = DB.order.map(id => DB.people[id]);
+  const who = all.find(p => q.includes(p.first) && p.first.length > 1) || null;
+  const t = q.toLowerCase();
+  let out = "";
+
+  const fmt = p => `${p.first} ${p.last} (ת״ז ${p.id}, גיל ${age(p.birth) ?? "?"})`;
+  const by = cls => all.filter(p => p.cls === cls);
+
+  if (/גיל/.test(q)) out = all.map(p => `${p.first} ${p.last}: ${age(p.birth) ?? "לא ידוע"}`).join("\n");
+  else if (/כתובת|גר|גרה|איפה/.test(q)) out = all.map(p => `${p.first} ${p.last}: ${p.address || "לא ידוע"}`).join("\n");
+  else if (/טלפון|נייד|להתקשר/.test(q)) out = all.map(p => `${p.first} ${p.last}: ${p.phones || "לא ידוע"}`).join("\n");
+  else if (/אבא|אב/.test(q)) out = all.map(p => `${p.first} ${p.last} — אב: ${p.fatherName || "לא ידוע"}${p.fatherId ? " (" + p.fatherId + ")" : ""}`).join("\n");
+  else if (/אמא|אם/.test(q)) out = all.map(p => `${p.first} ${p.last} — אם: ${p.motherName || "לא ידוע"}${p.motherId ? " (" + p.motherId + ")" : ""}`).join("\n");
+  else if (/בן זוג|בת זוג|נשוי|נשואה|זוג/.test(q)) out = by("main").concat(by("spouse")).map(fmt).join("\n");
+  else if (/הורים/.test(q)) out = by("parent").map(fmt).join("\n") || "אין רשומות הורים.";
+  else if (/מי/.test(q) && who) out = fmt(who) + " — " + who.role + (who.address ? `, ${who.address}` : "");
+  else out = "אפשר לשאול על: גיל, כתובת, טלפון, אבא, אמא, הורים, בני זוג.";
+
+  push("a", out);
+}
+
+/* ============================================================
+   ייצוא
+   ============================================================ */
+function exportJSON() {
+  const data = { generated: new Date().toISOString(), source: "agron", people: DB.order.map(id => DB.people[id]) };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "family-intelligence-full-data.json";
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+function exportPNG() {
+  if (!window.html2canvas) return alert("ספריית הייצוא לא נטענה.");
+  html2canvas(document.getElementById("main"), { backgroundColor: "#0b0710", scale: 2 })
+    .then(c => {
+      const a = document.createElement("a");
+      a.href = c.toDataURL("image/png");
+      a.download = "family-intelligence-tree.png";
+      a.click();
+    });
+}
+
+function reload() { location.reload(); }
+
+document.getElementById("q").addEventListener("input", e => render(e.target.value));
+boot();
 </script>
-</body></html>
+</body>
+</html>
